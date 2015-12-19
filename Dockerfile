@@ -1,15 +1,10 @@
-# This file describes how to build a docker-registry supports aliyun oss as the storage
-# AUTHOR: Chris Jin <chrisjin@outlook.com>
-# TO_BUILD:       docker build -rm -t registry .
-# TO_RUN:         docker run -e OSS_BUCKET=<oss_bucket>  -e STORAGE_PATH=/docker/ -e OSS_KEY=<oss_key>  -e OSS_SECRET=<oss_secret>  -p 5000:5000 registry
-
-AUTHOR: Chris Jin <chrisjin@outlook.com>
-FROM	registry:0.8.1
+FROM	    registry:latest
+MAINTAINER  Mike Huang <hhy5861@gmail.com>
 
 # Packaged dependencies
-RUN	apt-get update && apt-get install -y wget unzip 
+RUN	apt-get update && apt-get install -y wget unzip
 
-#get ali-oss api 
+#get ali-oss api
 RUN mkdir -p /ali_oss/api && cd /ali_oss/api \
         && wget http://aliyunecs.oss-cn-hangzhou.aliyuncs.com/OSS_Python_API_20140509.zip \
         && unzip OSS_Python_API_20140509.zip && sudo python setup.py install
@@ -35,6 +30,6 @@ RUN echo '    oss_accesskey: _env:OSS_SECRET' >> /docker-registry/config/config.
 #set env
 env DOCKER_REGISTRY_CONFIG /docker-registry/config/config.yml
 env SETTINGS_FLAVOR oss
-RUN unset SEARCH_BACKEND  
+RUN unset SEARCH_BACKEND
 
 cmd exec docker-registry
